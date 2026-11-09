@@ -1,7 +1,7 @@
 {
   "name": "@k1pp0/model-viewer-webxr-capture",
   "type": "module",
-  "version": "0.2.1",
+  "version": "0.2.1-arara.1",
   "description": "WebXR AR screenshot capture for <model-viewer>, including shutter / flash / preview UI.",
   "repository": {
     "type": "git",

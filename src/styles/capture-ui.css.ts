@@ -189,4 +189,36 @@ export const captureUIStyles = css`
   width: 0.8em;
   margin-left: 0.4em;
 }
+
+/* --- Long-press save mode (save-hint attribute) --- */
+/* Darkened, blurred copy of the snapshot behind the preview. Extends past the
+   edges by more than the blur radius so the blurred border never shows. */
+.preview .preview-backdrop {
+  position: absolute;
+  inset: -48px;
+  width: calc(100% + 96px);
+  height: calc(100% + 96px);
+  object-fit: cover;
+  background-color: #000;
+  filter: var(--webxr-capture-backdrop-filter, blur(16px) brightness(0.45));
+  pointer-events: none;
+  z-index: -1;
+}
+.preview .save-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--webxr-capture-save-hint-color, #fff);
+  font-size: 16px;
+  font-weight: 700;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Keep clear of the iPhone home indicator. */
+  margin-bottom: max(0px, env(safe-area-inset-bottom));
+}
+.preview .save-hint > svg {
+  height: 50px;
+  width: 50px;
+  flex: none;
+}
 `;

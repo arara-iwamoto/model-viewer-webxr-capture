@@ -36,10 +36,19 @@ declare class ModelViewerWebXRCapture extends LitElement {
     actionText: string;
     filenamePrefix: string;
     shareTitle: string;
+    /**
+     * When set (non-empty), the preview switches to "long-press to save" mode:
+     * the save / share action button is replaced with this hint text, and a
+     * darkened, blurred copy of the snapshot is laid behind the preview so the
+     * hint stays legible. Saving is left to the browser's long-press menu on
+     * the preview image.
+     */
+    saveHint: string;
     private flashEl;
     private shutterEl;
     private previewEl;
     private previewImg;
+    private previewBackdrop;
     private host;
     private provider;
     private unsubscribeFrame;
