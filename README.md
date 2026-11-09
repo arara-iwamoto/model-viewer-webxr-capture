@@ -35,7 +35,7 @@ The bundled variant inlines three.js and Lit — no import map or build step nee
 This package is distributed via [GitHub Releases](https://github.com/k1pp0/model-viewer-webxr-capture/releases) as a tarball (`.tgz`), not via the public npm registry. Install it directly from the release URL:
 
 ```bash
-npm install @google/model-viewer https://github.com/k1pp0/model-viewer-webxr-capture/releases/download/v0.2.1/k1pp0-model-viewer-webxr-capture-0.2.1.tgz
+npm install @google/model-viewer https://github.com/arara-iwamoto/model-viewer-webxr-capture/releases/download/v0.2.1-arara.1/k1pp0-model-viewer-webxr-capture-0.2.1-arara.1.tgz
 ```
 
 `<model-viewer>` is the unmodified upstream package; the plugin attaches itself purely via Symbol reflection on the host element + idempotent global patches at first `connectedCallback`. Pages that load the plugin module without placing `<model-viewer-webxr-capture>` see no behavior change.
