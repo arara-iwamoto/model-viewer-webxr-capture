@@ -82,6 +82,7 @@ The companion element owns the public capture API; the host `<model-viewer>` int
 | `action-text` | `Save / Share` | Label shown on the preview's action button. |
 | `filename-prefix` | `webxr-snap` | Prefix for the downloaded / shared file name. |
 | `share-title` | `WebXR Snap` | Title passed to `navigator.share`. |
+| `save-hint` | _empty_ | When set, switches the preview to long-press-to-save mode: the action button is replaced with this hint text (followed by a long-press icon), and a darkened, blurred copy of the snapshot is laid behind the preview. Saving relies on the browser's long-press menu on the preview image. |
 
 ## Events
 
@@ -103,6 +104,8 @@ All events fire on the `<model-viewer-webxr-capture>` element itself (not on the
 | `--webxr-capture-action-button-color` | `#fff` |
 | `--webxr-capture-action-button-text-color` | `#000` |
 | `--webxr-capture-font-family` | `inherit` |
+| `--webxr-capture-save-hint-color` | `#fff` |
+| `--webxr-capture-backdrop-filter` | `blur(16px) brightness(0.45)` |
 
 ## Acknowledgements
 

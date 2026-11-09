@@ -59,6 +59,30 @@ suite('<model-viewer-webxr-capture>', () => {
     expect(event.defaultPrevented).to.equal(true);
   });
 
+  suite('save-hint (long-press save mode)', () => {
+    test('renders the action button and no backdrop by default', async () => {
+      await element.updateComplete;
+      const root = element.shadowRoot!;
+      expect(element.saveHint).to.equal('');
+      expect(root.querySelector('.action-button')).to.exist;
+      expect(root.querySelector('.save-hint')).to.equal(null);
+      expect(root.querySelector('.preview-backdrop')).to.equal(null);
+    });
+
+    test('replaces the action button with the hint and adds a backdrop',
+         async () => {
+           element.setAttribute('save-hint', 'Long-press to save');
+           await element.updateComplete;
+           const root = element.shadowRoot!;
+           expect(root.querySelector('.action-button')).to.equal(null);
+           expect(root.querySelector('.save-hint-text')!.textContent)
+               .to.equal('Long-press to save');
+           expect(root.querySelector('.preview-backdrop')).to.exist;
+           // The close button stays as the only way out of the preview.
+           expect(root.querySelector('.preview-close')).to.exist;
+         });
+  });
+
   suite('captureWebXRScreenshot', () => {
     test('canCaptureWebXRScreenshot is false before any AR session', () => {
       expect(element.canCaptureWebXRScreenshot).to.equal(false);

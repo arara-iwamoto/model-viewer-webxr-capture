@@ -11,6 +11,7 @@ import { customElement, property, query } from 'lit/decorators.js';
 import { WebXRCaptureProvider } from './webxr-capture-provider.js';
 import CaptureCloseIcon from './assets/capture-close-svg.js';
 import CaptureDownloadIcon from './assets/capture-download-svg.js';
+import CaptureLongPressIcon from './assets/capture-long-press-svg.js';
 import { ensureFrameHook, ensureGlobalPatches, getARRenderer, getThreeRenderer, getXRSession, subscribe } from './host-bridge.js';
 import { captureUIStyles } from './styles/capture-ui.css.js';
 import { WebXRCaptureOptions } from './three-components/WebXRCapture.js';
@@ -56,10 +57,21 @@ export class ModelViewerWebXRCapture extends LitElement {
 
   @property({ type: String, attribute: 'share-title' }) shareTitle = 'WebXR Snap';
 
+  /**
+   * When set (non-empty), the preview switches to "long-press to save" mode:
+   * the save / share action button is replaced with this hint text, and a
+   * darkened, blurred copy of the snapshot is laid behind the preview so the
+   * hint stays legible. Saving is left to the browser's long-press menu on
+   * the preview image.
+   */
+  @property({ type: String, attribute: 'save-hint', reflect: true })
+  saveHint = '';
+
   @query('.flash') private flashEl!: HTMLElement;
   @query('.shutter') private shutterEl!: HTMLElement;
   @query('.preview') private previewEl!: HTMLElement;
   @query('.preview-image') private previewImg!: HTMLImageElement;
+  @query('.preview-backdrop') private previewBackdrop!: HTMLImageElement | null;
 
   private host: HTMLElement | null = null;
   private provider = new WebXRCaptureProvider();
@@ -117,6 +129,7 @@ export class ModelViewerWebXRCapture extends LitElement {
   }
 
   protected render(): TemplateResult {
+    const longPressMode = this.saveHint.length > 0;
     return html`
       <div class="flash" aria-hidden="true"></div>
       <div class="shutter" part="shutter">
@@ -129,6 +142,9 @@ export class ModelViewerWebXRCapture extends LitElement {
       </div>
       <div class="preview" part="preview" role="dialog"
           aria-label="AR snapshot preview">
+        ${longPressMode ?
+        html`<img class="preview-backdrop" alt="" aria-hidden="true">` :
+        null}
         <div class="top-bar">
           <div class="preview-box">
             <button class="preview-close style-reset icon-button" type="button"
@@ -139,11 +155,16 @@ export class ModelViewerWebXRCapture extends LitElement {
           </div>
         </div>
         <div class="bottom-bar">
-          <button class="action-button style-reset" type="button"
-              @click=${this.onActionClick}>
-            <span class="action-text">${this.actionText}</span>
-            ${CaptureDownloadIcon}
-          </button>
+          ${longPressMode ?
+        html`<div class="save-hint">
+                <span class="save-hint-text">${this.saveHint}</span>
+                ${CaptureLongPressIcon}
+              </div>` :
+        html`<button class="action-button style-reset" type="button"
+                  @click=${this.onActionClick}>
+                <span class="action-text">${this.actionText}</span>
+                ${CaptureDownloadIcon}
+              </button>`}
         </div>
       </div>
     `;
@@ -279,6 +300,10 @@ export class ModelViewerWebXRCapture extends LitElement {
       this.previewImg.style.visibility = '';
       this.previewImg.src = this.currentUrl;
     }
+    if (this.previewBackdrop != null) {
+      this.previewBackdrop.style.visibility = '';
+      this.previewBackdrop.src = this.currentUrl;
+    }
     this.classList.add('preview-open');
     this.previewEl?.classList.add('fade-in');
     // Hide the shutter behind the preview during the fade-in.
@@ -300,6 +325,9 @@ export class ModelViewerWebXRCapture extends LitElement {
     if (this.previewImg != null) {
       this.previewImg.style.visibility = 'hidden';
     }
+    if (this.previewBackdrop != null) {
+      this.previewBackdrop.style.visibility = 'hidden';
+    }
     if (this.clearSrcTimer !== 0) {
       clearTimeout(this.clearSrcTimer);
     }
@@ -307,6 +335,7 @@ export class ModelViewerWebXRCapture extends LitElement {
       if (this.previewImg != null) {
         this.previewImg.removeAttribute('src');
       }
+      this.previewBackdrop?.removeAttribute('src');
       this.classList.remove('preview-open');
       this.releaseCurrentBlob();
       this.clearSrcTimer = 0;
